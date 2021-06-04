@@ -103,6 +103,7 @@ $(function () {
           args[random] = args[random].replace(args[random][i], '_')
           console.log(args[random])
         }*/
+        answer = answer.join(' ')
         specificQuestion(args.join(' '));
     }
     $('#input').on('keydown', function (event) {
