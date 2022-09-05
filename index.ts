@@ -1,153 +1,176 @@
 $(() => {
 
-  let doGeneral = false,
-    doQuotes = true
+  $('#screen').width($('#screen').height()! * 4)
+  $('#container').width($('#screen').width()! + 46)
 
-  let questionNumber, answer
-  let quotes = [
-    '"You\'ll speak nothin\' of Elizabeth... Do you look for a whippin\'?"',
-    '"I will cut off my hand before I reach for you again"',
-    '"we never touched"',
-    '"I will fall like an ocean on that court! Fear nothing Elizabeth"',
-    '"She thinks to dance with me on my wife\'s grave!"'
-  ] //if anyone is stalking my github just ignore this i need it for me english exam in 2 days :)
-
-
-  let extractors = [
-
-  ]
-  let questions = [
-    ['1²', `${1**2}`],
-    ['2²', `${2**2}`],
-    ['3²', `${3**2}`],
-    ['4²', `${4**2}`],
-    ['5²', `${5**2}`],
-    ['6²', `${6**2}`],
-    ['7²', `${7**2}`],
-    ['8²', `${8**2}`],
-    ['9²', `${9**2}`],
-    ['10²', `${10**2}`],
-    ['11²', `${11**2}`],
-    ['12²', `${12**2}`],
-    ['13²', `${13**2}`],
-    ['14²', `${14**2}`],
-    ['15²', `${15**2}`],
-    ['16²', `${16**2}`],
-    ['17²', `${17**2}`],
-    ['18²', `${18**2}`],
-    ['19²', `${19**2}`],
-    ['20²', `${20**2}`],
-  ]
-  console.log(questions)
+  interface Question {
+    type: string,
+    content: string,
+    answer: number | undefined
+  }
+  let question: Question = {
+    type: '',
+    content: '',
+    answer: undefined
+  }
+  let feedBackTimeout
 
   function correct() {
+    clearTimeout(feedBackTimeout)
     play()
-    $('body').css('background-color', 'lime')
-    setTimeout(() => {
-      $('body').css('background-color', 'rgb(75, 75, 75)')
+    $('#screen').css('border', '3px solid lime')
+    feedBackTimeout = setTimeout(() => {
+      $('#screen').css('border', '3px solid rgb(43, 43, 43')
     }, 1000);
   }
 
-  function incorrect() {
-    $('body').css('background-color', 'red')
-    $('#correction').html(answer)
+/*   function incorrect() {
+    clearTimeout(feedBackTimeout)
+    $('#screen').css('border', '3px solid red')
+    $('#correction').html(question.answer)
     play()
-    setTimeout(() => {
-      $('body').css('background-color', 'rgb(75, 75, 75)')
+    feedBackTimeout = setTimeout(() => {
+      $('#screen').css('border', '3px solid rgb(43, 43, 43')
       $('#correction').html('&#8203')
     }, 1000);
-  }
+  } */
 
-  function gamerSort(val) {
-    let sorted = []
-    while (sorted.length < val.length) {
-      let lowest = 1e9
-      for (let i = 0; i < val.length; i++)
-        if (!sorted.includes(val[i]) && val[i] < lowest) lowest = val[i]
-      sorted.push(lowest)
-    }
-    return sorted
-  }
 
-  function extractText(topic, count) {
-    console.log(count)
-    questionNumber = Math.floor(Math.random() * (topic.length))
-    let args = topic[questionNumber].split(' ')
-    let random = Math.floor(Math.random() * args.length)
-    let vals = [random]
-    let parts = [args[random]]
-    console.log(args, random)
-    if (args.length - 1 > random) vals.push(random + 1)
-    else vals.push(random - 2, random - 1)
-    if (vals.length < 3) {
-      if (args.length - 1 > random + 1) vals.push(random + 2)
-      else vals.push(random - 1)
-    }
-
-    console.log(vals, 'wee')
-    vals = gamerSort(vals)
-    console.log(vals, "awooga")
-    answer = []
-    for (let i = 0; i < count; i++) {
-      console.log(answer)
-      answer.push(args[vals[i]].replace('"', ''))
-    }
-    console.log(args, answer.join(' '))
-
-    for (let i = 0; i < count; i++) {
-      console.log(args[vals[i]], args[vals[i]].length)
-      for (let ii = 0; ii < args[vals[i]].length; ii++) {
-        console.log(args[vals[i]], args[vals[i]][ii])
-        if (args[vals[i]][ii] == '"') continue
-        console.log(args[vals[i]])
-        args[vals[i]] = args[vals[i]].replace(args[vals[i]][ii], '_')
-        console.log(args[vals[i]])
-      }
-    }
-
-    /* for (let i = 0; i < args[vals[i]].length; i++) {
-      if (args[random][i] == '"') continue
-      console.log(args[random])
-      args[random] = args[random].replace(args[random][i], '_')
-      console.log(args[random])
-    }*/
-    specificQuestion(args.join(' '))
-  }
-
-  $('#input').on('keydown', event => {
-    if (event.key == 'Enter') {
-      if ($('#input').val() == answer) {
-        correct()
-      } else incorrect()
-      $('#input').val('')
-    }
+  $('#input').on('keypress', event => {
+    //console.log(event.key, Number(event.key), Number.isNaN(Number(event.key)), ['Enter', '-'].includes(event.key))
+    if(Number.isNaN(Number(event.key)) && !['Enter', '-'].includes(event.key)) return false
+    //if (event.key == 'Enter') {
+      setTimeout(() => {
+        if ($('#input').val() == question.answer && $('#input').val() != '') {
+          correct()
+          $('#input').val('')
+        }// else incorrect()
+        
+      }, 1);
+    //}
   })
 
   function play() {
-    if (doGeneral) getQuestion()
-    else if (doQuotes) extractText(quotes, Math.floor(Math.random() * 3) + 1)
+    if (question.type == 'Multiplication1') {
+      let val1 = Math.floor(Math.random() * 11)
+      let val2 = Math.floor(Math.random() * 11)
+      question.content = `${val1} x ${val2}`
+      $('#question').html(question.content)
+      question.answer = val1 * val2
 
+    } else if (question.type == 'Multiplication2') {
+      let val1 = Math.floor(Math.random() * 10) + 11
+      let val2 = Math.floor(Math.random() * 10) + 11
+      question.content = `${val1} x ${val2}`
+      $('#question').html(question.content)
+      question.answer = val1 * val2
+
+    } else if (question.type == 'Multiplication3') {
+      let val1 = Math.floor(Math.random() * 80) + 20
+      let val2 = Math.floor(Math.random() * 80) + 20
+      question.content = `${val1} x ${val2}`
+      $('#question').html(question.content)
+      question.answer = val1 * val2
+
+    } else if (question.type == 'Squares1') {
+      let val = Math.floor(Math.random() * 11)
+      question.content = `${val}\u00B2`
+      $('#question').html(question.content)
+      question.answer = val ** 2
+
+    } else if (question.type == 'Squares2') {
+      let val = Math.floor(Math.random() * 10) + 11
+      question.content = `${val}\u00B2`
+      $('#question').html(question.content)
+      question.answer = val ** 2
+
+    } else if (question.type == 'Squares3') {
+      let val = Math.floor(Math.random() * 80) + 20
+      question.content = `${val}\u00B2`
+      $('#question').html(question.content)
+      question.answer = val ** 2
+
+    } else if (question.type == 'Arithmetic1') {
+      let sign = (Math.floor(Math.random() * 2) == 0) ? '+' : '-'
+      let val1 = Math.floor(Math.random() * 11)
+      let val2 = Math.floor(Math.random() * 11)
+      question.content = `${val1} ${sign} ${val2}`
+      $('#question').html(question.content)
+      question.answer = eval(question.content)
+
+    } else if (question.type == 'Arithmetic2') {
+      let sign = (Math.floor(Math.random() * 2) == 0) ? '+' : '-'
+      let val1 = Math.floor(Math.random() * 10) + 11
+      let val2 = Math.floor(Math.random() * 10) + 11
+      question.content = `${val1} ${sign} ${val2}`
+      $('#question').html(question.content)
+      question.answer = eval(question.content)
+
+    } else if (question.type == 'Arithmetic3') {
+      let sign = (Math.floor(Math.random() * 2) == 0) ? '+' : '-'
+      let val1 = Math.floor(Math.random() * 80) + 20
+      let val2 = Math.floor(Math.random() * 80) + 20
+      question.content = `${val1} ${sign} ${val2}`
+      $('#question').html(question.content)
+      question.answer = eval(question.content)
+    }
   }
 
-  function getQuestion() {
-    questionNumber = Math.floor(Math.random() * (questions.length))
-    question(questionNumber)
-  }
+  /*   function getQuestion() {
+      questionNumber = Math.floor(Math.random() * (questions.length))
+      question(questionNumber)
+    }
 
-  function question(qn) {
-    console.log('huh?')
-    $('#question').html(questions[qn][0])
-    answer = questions[qn][1]
-  }
+    function question(qn) {
+      console.log('huh?')
+      $('#question').html(questions[qn][0])
+      answer = questions[qn][1]
+    }
 
-  function specificQuestion(question) {
-    $('#question').html(question)
-  }
+    function specificQuestion(question) {
+      $('#question').html(question)
+    } */
 
   play()
 
-  $('body').on('click', event => {
+  $('#screen').on('click', event => {
     $('#input').trigger("focus")
   })
 
+  $('.key').on('click', event => {
+    //if(!event.target.parentElement) return
+    switch(event.target.parentElement?.id) {
+      case 'key1':
+        question.type = 'Multiplication1'
+      break;
+      case 'key2':
+        question.type = 'Multiplication2'
+      break;
+      case 'key3':
+        question.type = 'Multiplication3'
+      break;
+      case 'key4':
+        question.type = 'Squares1'
+      break;
+      case 'key5':
+        question.type = 'Squares2'
+      break;
+      case 'key6':
+        question.type = 'Squares3'
+      break;
+      case 'key7':
+        question.type = 'Arithmetic1'
+      break;
+      case 'key8':
+        question.type = 'Arithmetic2'
+      break;
+      case 'key9':
+        question.type = 'Arithmetic3'
+      break;
+    }
+    play()
+
+    console.log(event.target.parentElement?.id, question)
+
+  })
 })

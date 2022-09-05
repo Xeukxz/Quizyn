@@ -1,18 +1,24 @@
 body {
 	background-color: rgb(75, 75, 75);
 	font-family: Arial, Helvetica, sans-serif;
+	user-select: none;
 }
 
 #container {
 	position: relative;
 	float: left;
-	text-align: center;
 	top: 20%;
 	left: 50%;
-	width: 30%;
 	transform: translate(-50%);
+
+}
+
+#screen {
+	position: relative;
+	text-align: center;
 	background-color: rgb(43, 43, 43);
 	padding: 20px;
+	border: 3px solid rgb(43, 43, 43);
 }
 
 #question {
@@ -43,4 +49,44 @@ body {
 	transform: translate(-50%);
 	margin: 3px;
 	font-size: 20px;
+}
+
+#keyPad {
+	position: relative;
+	width: 100%;
+	background-color: rgb(53, 53, 53);
+	color: white;
+	font-size: 20px;
+}
+
+.keyPadRow {
+	position: relative;
+	width: 100%;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	display: flex;
+	justify-content: space-around;
+}
+
+.key {
+	position: relative;
+	width: 30%;
+	height: 50px;
+	background-color: rgb(66, 66, 66);
+	color: white;
+	font-size: 20px;
+	text-align: center;
+	outline: none;
+}
+
+.key p {
+	position: relative;
+	top: 50%;
+	transform: translate(0, -50%);
+	margin: 0px;
+}
+
+.key:hover {
+	background-color: rgb(57, 57, 57);
+	cursor: pointer;
 }
